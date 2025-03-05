@@ -1,3 +1,5 @@
+> Change the Database Connection string in `appsettings.json` file.
+
 ## Check inserted data
 ```sql
 select * from fsm.containment_types ct ;
@@ -57,4 +59,4 @@ AddRows<SourceLic, Lic>(EntityBuilder.BuildLic, (source, skip, batchSize) => [..
 AddRows<SourceTreatmentPlant, TreatmentPlant>(EntityBuilder.BuildTreatmentPlant, (source, skip, batchSize) => [.. source.Skip(skip).Take(batchSize)]);
 AddRows<SourceCommunityToilet, Toilet>(EntityBuilder.BuildToilet, (source, skip, batchSize) => [.. source.Skip(skip).Take(batchSize)]);
 AddRows<SourcePublicToilet, Toilet>(EntityBuilder.BuildToilet, (source, skip, batchSize) => [.. source.Skip(skip).Take(batchSize)]);
-        ```
+```
