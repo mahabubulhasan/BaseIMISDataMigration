@@ -43,3 +43,18 @@ select wb."Ward_No", count(wb."Ward_No") as total from "Ward_boundary" wb group 
 
 select b."BIN", count(b."BIN") as total from "Buildings" b group by b."BIN" order by total desc;
 ```
+
+```csharp
+// Calling Order is important
+AddRows<SourceRoad, Road>(EntityBuilder.BuildRoad, (source, skip, batchSize) => [.. source.Skip(skip).Take(batchSize)]);
+AddRows<SourceDrain, Drain>(EntityBuilder.BuildDrain, (source, skip, batchSize) => [.. source.Skip(skip).Take(batchSize)]);
+AddRows<SourceWard, Ward>(EntityBuilder.BuildWard, (source, skip, batchSize) => [.. source.Skip(skip).Take(batchSize)]);
+AddRows<SourceWard, WardBoundary>(EntityBuilder.BuildWardBoundary, (source, skip, batchSize) => [.. source.Skip(skip).Take(batchSize)]);
+AddRows<SourceBuilding, Building>(EntityBuilder.BuildBuilding, (source, skip, batchSize) => [.. source.Skip(skip).Take(batchSize)]);
+AddRows<SourceBuilding, Owner>(EntityBuilder.BuildOwner, (source, skip, batchSize) => [.. source.Skip(skip).Take(batchSize)]);
+AddRows<SourceContainment, Containment>(EntityBuilder.BuildContainment, (source, skip, batchSize) => [.. source.Include(x => x.SourceBuilding).Skip(skip).Take(batchSize)]);
+AddRows<SourceLic, Lic>(EntityBuilder.BuildLic, (source, skip, batchSize) => [.. source.Skip(skip).Take(batchSize)]);
+AddRows<SourceTreatmentPlant, TreatmentPlant>(EntityBuilder.BuildTreatmentPlant, (source, skip, batchSize) => [.. source.Skip(skip).Take(batchSize)]);
+AddRows<SourceCommunityToilet, Toilet>(EntityBuilder.BuildToilet, (source, skip, batchSize) => [.. source.Skip(skip).Take(batchSize)]);
+AddRows<SourcePublicToilet, Toilet>(EntityBuilder.BuildToilet, (source, skip, batchSize) => [.. source.Skip(skip).Take(batchSize)]);
+        ```

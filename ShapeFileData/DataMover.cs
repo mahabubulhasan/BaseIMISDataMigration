@@ -116,6 +116,7 @@ public static class DataMover
     {
         SaveTypes();
 
+        // Calling Order is important
         AddRows<SourceRoad, Road>(EntityBuilder.BuildRoad, (source, skip, batchSize) => [.. source.Skip(skip).Take(batchSize)]);
         AddRows<SourceDrain, Drain>(EntityBuilder.BuildDrain, (source, skip, batchSize) => [.. source.Skip(skip).Take(batchSize)]);
         AddRows<SourceWard, Ward>(EntityBuilder.BuildWard, (source, skip, batchSize) => [.. source.Skip(skip).Take(batchSize)]);
