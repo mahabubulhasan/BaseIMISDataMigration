@@ -1,3 +1,4 @@
+using NetTopologySuite.Geometries;
 using ShapeFileData.SourceEntities;
 using ShapeFileData.TargetEntities;
 
@@ -30,14 +31,14 @@ public static class EntityBuilder
 
     public static Ward BuildWard(SourceWard row) => new()
     {
-        WardNumber = row.WardNo.HasValue ? (int)row.WardNo.Value : 0,
+        WardNumber = int.TryParse(row.Uid.AsSpan(1), out int wn) ? wn : 0,
         Area = row.AreaKm2,
         Geometry = row.Geometry,
     };
 
     public static WardBoundary BuildWardBoundary(SourceWard row) => new()
     {
-        WardNumber = row.WardNo.HasValue ? (int)row.WardNo.Value : 0,
+        WardNumber = int.TryParse(row.Uid.AsSpan(1), out int wn) ? wn : 0,
         Area = row.AreaKm2,
         Geometry = row.Geometry,
     };
@@ -182,6 +183,6 @@ public static class EntityBuilder
         HouseholdWithPrivateToilet = row.ToiletHousehold.HasValue ? (int?)row.ToiletHousehold.Value : null,
         PopulationWithPrivateToilet = row.ToiletPopulation.HasValue ? (int?)row.ToiletPopulation.Value : null,
         DesludgingVehicleAccessible = row.Desludger?.Equals("Yes", StringComparison.OrdinalIgnoreCase) == true,
-        Geometry = row.Geometry,
+        Geometry = Util.Force2D(row.Geometry),
     };
 }
