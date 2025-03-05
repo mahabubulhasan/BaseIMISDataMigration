@@ -1,0 +1,14 @@
+# Ignore the bin directory
+/bin/
+ShapeFileData/bin/
+ShapeFileData/obj/
+.vs
+
+# Common files to ignore
+*.swp
+*.swo
+*.dll
+*.exe
+*.pdb
+.DS_Store
+Thumbs.db
