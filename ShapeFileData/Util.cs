@@ -23,14 +23,7 @@ public static class Util
             return null;
         }
 
-        return new MultiPolygon(
-            [.. geometry.Geometries.Select(g =>
-                new Polygon(
-                    ((Polygon)g).Shell,
-                    ((Polygon)g).Holes
-                )
-            )],
-            geometry.Factory
-        );
+        var output = GeometryHelper.ConvertTo2D(geometry);
+        return output;
     }
 }
