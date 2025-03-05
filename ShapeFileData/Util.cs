@@ -23,7 +23,6 @@ public static class Util
             return null;
         }
 
-        var output = GeometryHelper.ConvertTo2D(geometry);
-        return output;
+        return GeometryHelper.ConvertTo2D(geometry);
     }
 }
