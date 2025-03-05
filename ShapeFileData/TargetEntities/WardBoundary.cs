@@ -14,7 +14,7 @@ public class WardBoundary
     [Column("area")]
     public double? Area { get; set; }
 
-    [Column("geom")]
+    [Column("geom", TypeName = "geometry(multipolygon,4326)")]
     public MultiPolygon? Geometry { get; set; }
 
     [Column("created_at")]

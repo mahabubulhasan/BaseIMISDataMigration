@@ -30,7 +30,7 @@ public class Drain
     [Column("treatment_plant_id")]
     public int? TreatmentPlantId { get; set; }
 
-    [Column("geom")]
+    [Column("geom", TypeName = "geometry(multilinestring,4326)")]
     public MultiLineString? Geometry { get; set; }
 
     [Column("user_id")]

@@ -47,7 +47,7 @@ public class TreatmentPlant
     [Column("status")]
     public bool? Status { get; set; }
 
-    [Column("geom")]
+    [Column("geom", TypeName = "geometry(point,4326)")]
     public Point? Geometry { get; set; }
 
     [Column("created_at")]

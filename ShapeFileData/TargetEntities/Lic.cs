@@ -15,7 +15,7 @@ public class Lic
     [Column("community_name")]
     public string? CommunityName { get; set; }
 
-    [Column("geom")]
+    [Column("geom", TypeName = "geometry(multipolygon,4326)")]
     public MultiPolygon? Geometry { get; set; }
 
     [Column("no_of_buildings")]

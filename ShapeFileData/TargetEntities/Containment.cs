@@ -61,7 +61,7 @@ public class Containment
     [Column("distance_closest_well")]
     public decimal? DistanceClosestWell { get; set; }
 
-    [Column("geom")]
+    [Column("geom", TypeName = "geometry(point, 4326)")]
     public Point? Geometry { get; set; }
 
     [Column("user_id")]

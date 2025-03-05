@@ -96,7 +96,7 @@ public class Toilet
     [Column("frequency_of_fee_collected")]
     public string? FrequencyOfFeeCollected { get; set; }
 
-    [Column("geom")]
+    [Column("geom", TypeName = "geometry(point, 4326)")]
     public Point? Geometry { get; set; }
 
     [Column("created_at")]
