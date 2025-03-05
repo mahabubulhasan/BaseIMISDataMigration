@@ -14,7 +14,7 @@ public class SourceContainment
     [Column("id")]
     public int Id { get; set; }
 
-    [Column("geom")]
+    [Column("geom", TypeName = "geometry(point, 32646)")]
     public Point? Geometry { get; set; }
 
     [Column("ConType")]

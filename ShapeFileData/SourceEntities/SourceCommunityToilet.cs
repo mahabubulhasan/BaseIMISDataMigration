@@ -11,7 +11,7 @@ public class SourceCommunityToilet
     [Column("id")]
     public int Id { get; set; }
 
-    [Column("geom")]
+    [Column("geom", TypeName = "geometry(multipolygon, 32646)")]
     public MultiPolygon? Geometry { get; set; }
 
     [Column("ID_FID")]
