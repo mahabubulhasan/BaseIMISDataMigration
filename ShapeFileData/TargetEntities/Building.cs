@@ -132,7 +132,7 @@ public class Building
     public bool? DesludgingVehicleAccessible { get; set; }
 
     [Column("geom", TypeName = "geometry(multipolygon, 4326)")]
-    public Geometry? Geom { get; set; }
+    public MultiPolygon? Geometry { get; set; }
 
     [Column("verification_status")]
     public bool? VerificationStatus { get; set; }

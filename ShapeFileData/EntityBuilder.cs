@@ -1,4 +1,3 @@
-using System;
 using ShapeFileData.SourceEntities;
 using ShapeFileData.TargetEntities;
 
@@ -15,7 +14,7 @@ public static class EntityBuilder
         CarryingWidth = row.CarriageInMeters.HasValue ? (decimal?)row.CarriageInMeters.Value : null,
         SurfaceType = row.Surface,
         Length = row.LengthInMeters.HasValue ? (decimal?)row.LengthInMeters.Value : null,
-        // Geometry = row.Geometry,
+        Geometry = row.Geometry,
     };
 
     public static Drain BuildDrain(SourceDrain row) => new()
@@ -26,20 +25,21 @@ public static class EntityBuilder
         SurfaceType = row.DrainageStructure,
         Size = row.DrainWidthM.HasValue ? (decimal?)row.DrainWidthM.Value : null,
         Length = row.LengthM.HasValue ? (decimal?)row.LengthM.Value : null,
+        Geometry = row.Geometry,
     };
 
     public static Ward BuildWard(SourceWard row) => new()
     {
         WardNumber = row.WardNo.HasValue ? (int)row.WardNo.Value : 0,
         Area = row.AreaKm2,
-        // Geometry = row.Geometry,
+        Geometry = row.Geometry,
     };
 
     public static WardBoundary BuildWardBoundary(SourceWard row) => new()
     {
         WardNumber = row.WardNo.HasValue ? (int)row.WardNo.Value : 0,
         Area = row.AreaKm2,
-        // Geometry = row.Geometry,
+        Geometry = row.Geometry,
     };
 
     public static Lic BuildLic(SourceLic row) => new()
@@ -54,7 +54,8 @@ public static class EntityBuilder
         PopulationOthers = row.Others.HasValue ? (int?)row.Others.Value : null,
         NoOfSepticTank = row.SepticTank.HasValue ? (int?)row.SepticTank.Value : null,
         NoOfPit = row.Pit.HasValue ? (int?)row.Pit.Value : null,
-        NoOfCommunityToilets = row.CommunityToilet.HasValue ? (int?)row.CommunityToilet.Value : null
+        NoOfCommunityToilets = row.CommunityToilet.HasValue ? (int?)row.CommunityToilet.Value : null,
+        Geometry = row.Geometry,
     };
 
     public static TreatmentPlant BuildTreatmentPlant(SourceTreatmentPlant row) => new()
@@ -67,6 +68,7 @@ public static class EntityBuilder
         CaretakerName = row.Caretaker,
         CaretakerGender = row.Gender,
         CaretakerNumber = !string.IsNullOrEmpty(row.Contact) && long.TryParse(row.Contact, out long number) ? number : null,
+        Geometry = row.Geometry,
     };
 
     public static Toilet BuildToilet(SourceCommunityToilet row) => new()
@@ -84,6 +86,7 @@ public static class EntityBuilder
         TotalNumberOfToilets = row.Toilets.HasValue ? (int?)row.Toilets.Value : null,
         SanitarySuppliesDisposalFacility = row.Sanitary?.Equals("Yes", StringComparison.OrdinalIgnoreCase) == true,
         FeeCollected = row.Fees?.Equals("Yes", StringComparison.OrdinalIgnoreCase) == true,
+        Geometry = row.Geometry?.Centroid, // Point = MultiPolygon
     };
 
     public static Toilet BuildToilet(SourcePublicToilet row) => new()
@@ -107,6 +110,7 @@ public static class EntityBuilder
         IndicativeSign = row.Indicative?.Equals("Yes", StringComparison.OrdinalIgnoreCase) == true,
         SanitarySuppliesDisposalFacility = row.Sanitary?.Equals("Yes", StringComparison.OrdinalIgnoreCase) == true,
         FeeCollected = row.Fees?.Equals("Yes", StringComparison.OrdinalIgnoreCase) == true,
+        Geometry = row.Geometry?.Centroid, // Point = MultiPolygon
     };
 
     public static Owner BuildOwner(SourceBuilding row) => new()
@@ -122,6 +126,7 @@ public static class EntityBuilder
         Containment containment = new(){
             Id = $"C{row.Id:D6}",
             TypeId = DataQuery.GetContainmentTypeId(row.ConType),
+            Geometry = row.Geometry,
         };
 
         var building = row.SourceBuilding;
@@ -177,5 +182,6 @@ public static class EntityBuilder
         HouseholdWithPrivateToilet = row.ToiletHousehold.HasValue ? (int?)row.ToiletHousehold.Value : null,
         PopulationWithPrivateToilet = row.ToiletPopulation.HasValue ? (int?)row.ToiletPopulation.Value : null,
         DesludgingVehicleAccessible = row.Desludger?.Equals("Yes", StringComparison.OrdinalIgnoreCase) == true,
+        Geometry = row.Geometry,
     };
 }
