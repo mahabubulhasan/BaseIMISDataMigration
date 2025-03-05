@@ -11,7 +11,7 @@ namespace ShapeFileData.SourceEntities
         [Column("id")]
         public int Id { get; set; }
 
-        [Column("geom", TypeName = "geometry(multipolygon, 32646)")]
+        [Column("geom", TypeName = "geometry(multipolygonz, 4326)")]
         public MultiPolygon? Geom { get; set; }
 
         [Column("BIN")]

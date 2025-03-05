@@ -11,7 +11,7 @@ public class SourceTreatmentPlant
     [Column("id")]
     public int Id { get; set; }
 
-    [Column("geom", TypeName = "geometry(point, 32646)")]
+    [Column("geom", TypeName = "geometry(point, 4326)")]
     public Point? Geometry { get; set; }
 
     [Column("Location")]

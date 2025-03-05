@@ -13,7 +13,7 @@ public class SourceLic
     [Column("id")]
     public int Id { get; set; }
 
-    [Column("geom", TypeName = "geometry(multipolygon, 32646)")]
+    [Column("geom", TypeName = "geometry(multipolygon, 4326)")]
     public MultiPolygon? Geometry { get; set; }
 
     [Column("Name")]

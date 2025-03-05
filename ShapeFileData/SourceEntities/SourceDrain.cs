@@ -12,7 +12,7 @@ public class SourceDrain
     [Column("id")]
     public int Id { get; set; }
 
-    [Column("geom", TypeName = "geometry(multilinestring, 32646)")]
+    [Column("geom", TypeName = "geometry(multilinestring, 4326)")]
     public MultiLineString? Geometry { get; set; }
 
     [Column("FID_1")]
