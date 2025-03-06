@@ -2,7 +2,7 @@
 
 try
 {
-    DataMover.SaveInDatabase();
+    DataMigrator.Migrate();
 }
 catch (Exception)
 {

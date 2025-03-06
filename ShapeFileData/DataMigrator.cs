@@ -4,7 +4,7 @@ using ShapeFileData.TargetEntities;
 
 namespace ShapeFileData;
 
-public static class DataMover
+public static class DataMigrator
 {
     private static void AddContainmentTypes(DbSet<SourceBuilding> source, DbSet<ContainmentType> target)
     {
@@ -112,21 +112,21 @@ public static class DataMover
         AddContainmentTypes(sourceContext.SourceBuildings, targetContext.ContainmentTypes);
     }
 
-    public static void SaveInDatabase()
+    public static void Migrate()
     {
         SaveTypes();
 
         // Calling Order is important
-        AddRows<SourceRoad, Road>(EntityBuilder.BuildRoad, (source, skip, batchSize) => [.. source.Skip(skip).Take(batchSize)]);
-        AddRows<SourceDrain, Drain>(EntityBuilder.BuildDrain, (source, skip, batchSize) => [.. source.Skip(skip).Take(batchSize)]);
-        AddRows<SourceWard, Ward>(EntityBuilder.BuildWard, (source, skip, batchSize) => [.. source.Skip(skip).Take(batchSize)]);
-        AddRows<SourceWard, WardBoundary>(EntityBuilder.BuildWardBoundary, (source, skip, batchSize) => [.. source.Skip(skip).Take(batchSize)]);
-        AddRows<SourceBuilding, Building>(EntityBuilder.BuildBuilding, (source, skip, batchSize) => [.. source.Skip(skip).Take(batchSize)]);
-        AddRows<SourceBuilding, Owner>(EntityBuilder.BuildOwner, (source, skip, batchSize) => [.. source.Skip(skip).Take(batchSize)]);
-        AddRows<SourceContainment, Containment>(EntityBuilder.BuildContainment, (source, skip, batchSize) => [.. source.Include(x => x.SourceBuilding).Skip(skip).Take(batchSize)]);
-        AddRows<SourceLic, Lic>(EntityBuilder.BuildLic, (source, skip, batchSize) => [.. source.Skip(skip).Take(batchSize)]);
-        AddRows<SourceTreatmentPlant, TreatmentPlant>(EntityBuilder.BuildTreatmentPlant, (source, skip, batchSize) => [.. source.Skip(skip).Take(batchSize)]);
-        AddRows<SourceCommunityToilet, Toilet>(EntityBuilder.BuildToilet, (source, skip, batchSize) => [.. source.Skip(skip).Take(batchSize)]);
-        AddRows<SourcePublicToilet, Toilet>(EntityBuilder.BuildToilet, (source, skip, batchSize) => [.. source.Skip(skip).Take(batchSize)]);
+        AddRows<SourceRoad, Road>(EntityMapper.MapRoad, (source, skip, batchSize) => [.. source.Skip(skip).Take(batchSize)]);
+        AddRows<SourceDrain, Drain>(EntityMapper.MapDrain, (source, skip, batchSize) => [.. source.Skip(skip).Take(batchSize)]);
+        AddRows<SourceWard, Ward>(EntityMapper.MapWard, (source, skip, batchSize) => [.. source.Skip(skip).Take(batchSize)]);
+        AddRows<SourceWard, WardBoundary>(EntityMapper.MapWardBoundary, (source, skip, batchSize) => [.. source.Skip(skip).Take(batchSize)]);
+        AddRows<SourceBuilding, Building>(EntityMapper.MapBuilding, (source, skip, batchSize) => [.. source.Skip(skip).Take(batchSize)]);
+        AddRows<SourceBuilding, Owner>(EntityMapper.MapOwner, (source, skip, batchSize) => [.. source.Skip(skip).Take(batchSize)]);
+        AddRows<SourceContainment, Containment>(EntityMapper.MapContainment, (source, skip, batchSize) => [.. source.Include(x => x.SourceBuilding).Skip(skip).Take(batchSize)]);
+        AddRows<SourceLic, Lic>(EntityMapper.MapLic, (source, skip, batchSize) => [.. source.Skip(skip).Take(batchSize)]);
+        AddRows<SourceTreatmentPlant, TreatmentPlant>(EntityMapper.MapTreatmentPlant, (source, skip, batchSize) => [.. source.Skip(skip).Take(batchSize)]);
+        AddRows<SourceCommunityToilet, Toilet>(EntityMapper.MapToilet, (source, skip, batchSize) => [.. source.Skip(skip).Take(batchSize)]);
+        AddRows<SourcePublicToilet, Toilet>(EntityMapper.MapToilet, (source, skip, batchSize) => [.. source.Skip(skip).Take(batchSize)]);
     }
 }

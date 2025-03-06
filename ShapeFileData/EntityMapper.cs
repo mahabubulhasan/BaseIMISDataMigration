@@ -1,12 +1,11 @@
-using NetTopologySuite.Geometries;
 using ShapeFileData.SourceEntities;
 using ShapeFileData.TargetEntities;
 
 namespace ShapeFileData;
 
-public static class EntityBuilder
+public static class EntityMapper
 {
-    public static Road BuildRoad(SourceRoad row) => new()
+    public static Road MapRoad(SourceRoad row) => new()
     {
         Code = row.Uid ?? string.Empty,
         Name = row.RoadName,
@@ -18,7 +17,7 @@ public static class EntityBuilder
         Geometry = row.Geometry,
     };
 
-    public static Drain BuildDrain(SourceDrain row) => new()
+    public static Drain MapDrain(SourceDrain row) => new()
     {
         Code = row.DrainId ?? string.Empty,
         // RoadCode = row.RoadId, // TODO: Need to add Road first.
@@ -29,21 +28,21 @@ public static class EntityBuilder
         Geometry = row.Geometry,
     };
 
-    public static Ward BuildWard(SourceWard row) => new()
+    public static Ward MapWard(SourceWard row) => new()
     {
         WardNumber = int.TryParse(row.Uid.AsSpan(1), out int wn) ? wn : 0,
         Area = row.AreaKm2,
         Geometry = row.Geometry,
     };
 
-    public static WardBoundary BuildWardBoundary(SourceWard row) => new()
+    public static WardBoundary MapWardBoundary(SourceWard row) => new()
     {
         WardNumber = int.TryParse(row.Uid.AsSpan(1), out int wn) ? wn : 0,
         Area = row.AreaKm2,
         Geometry = row.Geometry,
     };
 
-    public static Lic BuildLic(SourceLic row) => new()
+    public static Lic MapLic(SourceLic row) => new()
     {
         Id = int.TryParse(row.Uid, out int licId) ? licId : 0,
         CommunityName = row.Name,
@@ -59,7 +58,7 @@ public static class EntityBuilder
         Geometry = row.Geometry,
     };
 
-    public static TreatmentPlant BuildTreatmentPlant(SourceTreatmentPlant row) => new()
+    public static TreatmentPlant MapTreatmentPlant(SourceTreatmentPlant row) => new()
     {
         Name = row.Uid,
         // Ward = sourceTreatmentPlant.Ward,
@@ -72,7 +71,7 @@ public static class EntityBuilder
         Geometry = row.Geometry,
     };
 
-    public static Toilet BuildToilet(SourceCommunityToilet row) => new()
+    public static Toilet MapToilet(SourceCommunityToilet row) => new()
     {
         Name = row.Name,
         Type = "Community Toilet",
@@ -90,7 +89,7 @@ public static class EntityBuilder
         Geometry = row.Geometry?.Centroid, // Point = MultiPolygon
     };
 
-    public static Toilet BuildToilet(SourcePublicToilet row) => new()
+    public static Toilet MapToilet(SourcePublicToilet row) => new()
     {
         Name = row.Name +" "+ row.Id,
         Type = "Public Toilet",
@@ -114,7 +113,7 @@ public static class EntityBuilder
         Geometry = row.Geometry?.Centroid, // Point = MultiPolygon
     };
 
-    public static Owner BuildOwner(SourceBuilding row) => new()
+    public static Owner MapOwner(SourceBuilding row) => new()
     {
         Bin = row.Bin,
         OwnerName = row.Owner,
@@ -122,7 +121,7 @@ public static class EntityBuilder
         OwnerContact = row.ContactNo.HasValue ? (long?)row.ContactNo.Value : null,
     };
 
-    public static Containment BuildContainment(SourceContainment row)
+    public static Containment MapContainment(SourceContainment row)
     {
         Containment containment = new(){
             Id = $"C{row.Id:D6}",
@@ -150,7 +149,7 @@ public static class EntityBuilder
         return containment;
     }
 
-    public static Building BuildBuilding(SourceBuilding row) => new()
+    public static Building MapBuilding(SourceBuilding row) => new()
     {
         Bin = row.Bin ?? string.Empty,
         BuildingAssociatedTo = row.LinkMain.HasValue ? row.LinkMain.Value.ToString() : null,
