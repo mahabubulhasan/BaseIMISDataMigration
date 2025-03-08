@@ -182,6 +182,6 @@ public static class EntityMapper
         HouseholdWithPrivateToilet = row.ToiletHousehold.HasValue ? (int?)row.ToiletHousehold.Value : null,
         PopulationWithPrivateToilet = row.ToiletPopulation.HasValue ? (int?)row.ToiletPopulation.Value : null,
         DesludgingVehicleAccessible = row.Desludger?.Equals("Yes", StringComparison.OrdinalIgnoreCase) == true,
-        Geometry = Util.Force2D(row.Geometry),
+        Geometry = row.Geometry.Force2D(),
     };
 }

@@ -1,9 +1,8 @@
-using System;
 using NetTopologySuite.Geometries;
 
 namespace ShapeFileData;
 
-public static class Util
+public static class Extensions
 {
     public static DateTime? ConvertToDateTime(string? date)
     {
@@ -16,7 +15,7 @@ public static class Util
         return new DateTime(Convert.ToInt32(year), 1, 1);
     }
 
-    public static MultiPolygon? Force2D(MultiPolygon? geometry)
+    public static MultiPolygon? Force2D(this MultiPolygon? geometry)
     {
         if (geometry == null)
         {
