@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ShapeFileData.SourceEntities
 {
+    [Obsolete("This class is deprecated and will be removed in future versions.")]
     [Table("Buildings", Schema = "public")]
     public class SourceBuilding
     {

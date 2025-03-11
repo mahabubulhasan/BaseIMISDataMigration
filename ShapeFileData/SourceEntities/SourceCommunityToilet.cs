@@ -4,7 +4,7 @@ using NetTopologySuite.Geometries;
 
 namespace ShapeFileData.SourceEntities;
 
-[Table("Community_Toilet_Info", Schema = "public")]
+[Table("Community_Toilets", Schema = "public")]
 public class SourceCommunityToilet
 {
     [Key]
@@ -70,4 +70,13 @@ public class SourceCommunityToilet
 
     [Column("BIN")]
     public string? Bin { get; set; }
+
+    [Column("status")]
+    public string? Status { get; set; }
+
+    [Column("OwnIns")]
+    public string? OwnIns { get; set; }
+
+    [Column("OperIns")]
+    public string? OperIns { get; set; }
 }

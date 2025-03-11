@@ -21,7 +21,7 @@ public class SourceTreatmentPlant
     public string? Type { get; set; }
 
     [Column("Capacity")]
-    public decimal? Capacity { get; set; }
+    public double? Capacity { get; set; }
 
     [Column("Gender")]
     public string? Gender { get; set; }
@@ -43,4 +43,7 @@ public class SourceTreatmentPlant
 
     [Column("Ward")]
     public string? Ward { get; set; }
+
+    [Column("status")]
+    public string? Status { get; set; }
 }

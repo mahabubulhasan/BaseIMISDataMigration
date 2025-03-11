@@ -1,12 +1,11 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Runtime.InteropServices;
 using NetTopologySuite.Geometries;
 
 namespace ShapeFileData.SourceEntities;
 
-
+[Obsolete("This class is deprecated and will be removed in future versions.")]
 [Table("Containments", Schema = "public")]
 public class SourceContainment
 {

@@ -33,7 +33,7 @@ public class TreatmentPlant
 
     [Column("capacity_per_day")]
     [Precision(10, 2)]
-    public decimal? CapacityPerDay { get; set; }
+    public double? CapacityPerDay { get; set; }
 
     [Column("caretaker_name")]
     public string? CaretakerName { get; set; }

@@ -20,7 +20,7 @@ public static class EntityMapper
     public static Drain MapDrain(SourceDrain row) => new()
     {
         Code = row.DrainId ?? string.Empty,
-        // RoadCode = row.RoadId, // TODO: Need to add Road first.
+        // RoadCode = row.RoadId,
         CoverType = row.DrainageCover,
         SurfaceType = row.DrainageStructure,
         Size = row.DrainWidthM.HasValue ? (decimal?)row.DrainWidthM.Value : null,
@@ -61,14 +61,15 @@ public static class EntityMapper
     public static TreatmentPlant MapTreatmentPlant(SourceTreatmentPlant row) => new()
     {
         Name = row.Uid,
-        // Ward = sourceTreatmentPlant.Ward,
+        Ward = row.Ward.ToWardNo(),
         Location = row.Location,
-        // Type = sourceTreatmentPlant.Type,
+        // Type = row.Type,
         CapacityPerDay = row.Capacity,
         CaretakerName = row.Caretaker,
         CaretakerGender = row.Gender,
         CaretakerNumber = !string.IsNullOrEmpty(row.Contact) && long.TryParse(row.Contact, out long number) ? number : null,
         Geometry = row.Geometry,
+        Status = row.Status?.Equals("Operational", StringComparison.OrdinalIgnoreCase) == true,
     };
 
     public static Toilet MapToilet(SourceCommunityToilet row) => new()
@@ -87,6 +88,10 @@ public static class EntityMapper
         SanitarySuppliesDisposalFacility = row.Sanitary?.Equals("Yes", StringComparison.OrdinalIgnoreCase) == true,
         FeeCollected = row.Fees?.Equals("Yes", StringComparison.OrdinalIgnoreCase) == true,
         Geometry = row.Geometry?.Centroid, // Point = MultiPolygon
+        Status = row.Status?.Equals("Operational", StringComparison.OrdinalIgnoreCase) == true,
+        OwningInstitutionName = row.OwnIns,
+        OperatorOrMaintainerName = row.OperIns
+
     };
 
     public static Toilet MapToilet(SourcePublicToilet row) => new()
@@ -111,48 +116,55 @@ public static class EntityMapper
         SanitarySuppliesDisposalFacility = row.Sanitary?.Equals("Yes", StringComparison.OrdinalIgnoreCase) == true,
         FeeCollected = row.Fees?.Equals("Yes", StringComparison.OrdinalIgnoreCase) == true,
         Geometry = row.Geometry?.Centroid, // Point = MultiPolygon
+        Status = row.Status?.Equals("Operational", StringComparison.OrdinalIgnoreCase) == true,
+        OwningInstitutionName = row.OwnIns,
+        OperatorOrMaintainerName = row.OperIns
     };
 
-    public static Owner MapOwner(SourceBuilding row) => new()
+    public static Owner MapOwner(SourceBuilding2 row) => new()
     {
         Bin = row.Bin,
-        OwnerName = row.Owner,
+        OwnerName = row.OwnerName,
         OwnerGender = row.Gender,
-        OwnerContact = row.ContactNo.HasValue ? (long?)row.ContactNo.Value : null,
+        OwnerContact = row.ContactNo.HasValue
+            ? (row.ContactNo.Value.ToString().Length == 10
+                ? long.Parse("0" + row.ContactNo.Value)
+                : (long?)row.ContactNo.Value)
+            : null,
     };
 
-    public static Containment MapContainment(SourceContainment row)
+    public static Containment MapContainment(SourceContainment2 row)
     {
         Containment containment = new(){
             Id = $"C{row.Id:D6}",
-            TypeId = DataQuery.GetContainmentTypeId(row.ConType),
+            TypeId = DataQuery.GetContainmentTypeId(row.ContConn),
             Geometry = row.Geometry,
+            Location = row.ContLoc,
+            Size = decimal.TryParse(row.Volume, out decimal volume) ? (decimal?)volume : null,
+            PitDiameter = decimal.TryParse(row.Dia, out decimal dia) ? (decimal?)dia : null,
+            TankLength = decimal.TryParse(row.Length, out decimal length) ? (decimal?)length : null,
+            TankWidth = decimal.TryParse(row.Width, out decimal width) ? (decimal?)width : null,
+            Depth = decimal.TryParse(row.Depth, out decimal depth) ? (decimal?)depth : null,
+            SepticCriteria = row.SepticChamber?.Equals("Yes", StringComparison.OrdinalIgnoreCase) == true,
+            ConstructionDate = row.Constr.ConvertYearToDateTime(),
+            LastEmptiedDate = row.LastEmptyDate?.Equals("Never Emptied", StringComparison.OrdinalIgnoreCase) == true ? null : row.LastEmptyDate.ConvertToDateTime(),
+            ResponsibleBin = row.Connection
         };
 
         var building = row.SourceBuilding;
 
         if(building != null){
-            containment.Location = building.ContLoc;
-            containment.Size = building.Volume.HasValue ? (decimal?)building.Volume.Value : null;
-            containment.PitDiameter = building.Dia.HasValue ? (decimal?)building.Dia.Value : null;
-            containment.TankLength = building.Length.HasValue ? (decimal?)building.Length.Value : null;
-            containment.TankWidth = building.Width.HasValue ? (decimal?)building.Width.Value : null;
-            containment.Depth = building.Depth.HasValue ? (decimal?)building.Depth.Value : null;
-            containment.SepticCriteria = building.Compliance?.Equals("Yes", StringComparison.OrdinalIgnoreCase) == true;
-            // containment.ConstructionDate = building.Constr.HasValue ? Util.ConvertYearToDateTime(building.Constr.Value) : null;
-            // containment.LastEmptiedDate = building.LastEmpDt?.Equals("Never Emptied", StringComparison.OrdinalIgnoreCase) == true ? null : Util.ConvertToDateTime(building.LastEmpDt);
             containment.ToiletCount = building.ToiletNum.HasValue ? (int?)building.ToiletNum.Value : null;
             containment.DistanceClosestWell = building.WellDis.HasValue ? (decimal?)building.WellDis.Value : null;
-            containment.ResponsibleBin = building.Bin;
         }
 
         return containment;
     }
 
-    public static Building MapBuilding(SourceBuilding row) => new()
+    public static Building MapBuilding(SourceBuilding2 row) => new()
     {
         Bin = row.Bin ?? string.Empty,
-        BuildingAssociatedTo = row.LinkMain.HasValue ? row.LinkMain.Value.ToString() : null,
+        BuildingAssociatedTo = row.SubBin,
         // Ward = row.Ward.HasValue ? (int?)row.Ward.Value : null,
         RoadCode = row.RoadUid,
         // HouseNumber = row.Holding,
@@ -160,7 +172,7 @@ public static class EntityMapper
         TaxCode = row.TaxMatch,
         StructureTypeId = DataQuery.GetStructureTypeId(row.StructType),
         FloorCount = row.Floor.HasValue ? (int?)row.Floor.Value : null,
-        // ConstructionYear = row.ConstructionTime.HasValue ? Util.ConvertYearToDateTime(row.ConstructionTime.Value) : null,
+        ConstructionYear = row.ConstructionTime.ConvertYearToDateTime(),
         FunctionalUseId = DataQuery.GetFunctionalUseId(row.FuncUse),
         OfficeBusinessName = row.OfficeName,
         HouseholdServed = row.Household.HasValue ? (int?)row.Household.Value : null,
@@ -171,7 +183,7 @@ public static class EntityMapper
         DiffAbledMalePop = row.DisabledMale.HasValue ? (int?)row.DisabledMale.Value : null,
         DiffAbledFemalePop = row.DisabledFemale.HasValue ? (int?)row.DisabledFemale.Value : null,
         DiffAbledOthersPop = row.DisabledOthers.HasValue ? (int?)row.DisabledOthers.Value : null,
-        LowIncomeHh = row.LowIncome?.Equals("Yes", StringComparison.OrdinalIgnoreCase) == true,
+        LowIncomeHh = row.Lic?.Equals("Yes", StringComparison.OrdinalIgnoreCase) == true,
         // LicId = row.LowIncomeName, // TODO: LicId is int, LowIncomeName is string
         WaterSourceId = DataQuery.GetWaterSourceId(row.WaterSource),
         WaterCustomerId = row.WaterId,
@@ -181,6 +193,8 @@ public static class EntityMapper
         ToiletCount = row.ToiletNum.HasValue ? (int?)row.ToiletNum.Value : null,
         HouseholdWithPrivateToilet = row.ToiletHousehold.HasValue ? (int?)row.ToiletHousehold.Value : null,
         PopulationWithPrivateToilet = row.ToiletPopulation.HasValue ? (int?)row.ToiletPopulation.Value : null,
+        // SanitationSystemId = row.ConType,
+        DrainCode = row.DrainId,
         DesludgingVehicleAccessible = row.Desludger?.Equals("Yes", StringComparison.OrdinalIgnoreCase) == true,
         Geometry = row.Geometry.Force2D(),
     };

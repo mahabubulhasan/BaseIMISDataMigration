@@ -1,4 +1,3 @@
-using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using ShapeFileData.SourceEntities;
@@ -7,8 +6,8 @@ namespace ShapeFileData;
 
 public class SourceDbContext : DbContext
 {
-    public DbSet<SourceBuilding> SourceBuildings { get; set; }
-    public DbSet<SourceContainment> SourceContainments { get; set; }
+    public DbSet<SourceBuilding2> SourceBuildings { get; set; }
+    public DbSet<SourceContainment2> SourceContainments { get; set; }
     public DbSet<SourceRoad> SourceRoads { get; set; }
     public DbSet<SourceDrain> SourceDrains { get; set; }
     public DbSet<SourceLic> SourceLics { get; set; }
@@ -32,7 +31,7 @@ public class SourceDbContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
 
-        modelBuilder.Entity<SourceContainment>()
+        modelBuilder.Entity<SourceContainment2>()
             .HasOne(c => c.SourceBuilding)
             .WithMany(b => b.Containment)
             .HasForeignKey(c => c.Bin)
