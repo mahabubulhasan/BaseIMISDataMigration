@@ -102,6 +102,7 @@ public static class DataMigrator
         Console.WriteLine($"All {totalProcessed} {typeof(TTarget).Name} added successfully.");
     }
 
+    // Seeded directly from base_imis
     private static void SaveTypes(){
         using var sourceContext = new SourceDbContext();
         using var targetContext = new TargetDbContext();
@@ -117,7 +118,7 @@ public static class DataMigrator
 
     public static void Migrate()
     {
-        SaveTypes();
+        // SaveTypes();
 
         // Calling Order is important
         AddRows<SourceRoad, Road>(EntityMapper.MapRoad, (source, skip, batchSize) => [.. source.Skip(skip).Take(batchSize)]);
