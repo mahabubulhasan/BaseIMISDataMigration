@@ -110,6 +110,9 @@ public static class DataMigrator
         AddFunctionalUse(sourceContext.SourceBuildings, targetContext.FunctionalUses);
         AddStructureType(sourceContext.SourceBuildings, targetContext.StructureTypes);
         AddContainmentTypes(sourceContext.SourceBuildings, targetContext.ContainmentTypes);
+
+        targetContext.SaveChanges();
+        Console.WriteLine("Types saved successfully.");
     }
 
     public static void Migrate()
