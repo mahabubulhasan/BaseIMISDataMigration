@@ -13,7 +13,6 @@ public class SourceRoad
     public int Id { get; set; }
 
     [Column("geom", TypeName = "geometry(multilinestringz, 4326)")]
-    [NotMapped]
     public MultiLineString? Geometry { get; set; }
 
     [Column("Rd_Name")]

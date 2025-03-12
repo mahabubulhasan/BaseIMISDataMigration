@@ -6,6 +6,7 @@ public static class DataQuery
     private static readonly Dictionary<string, int> _structureTypeMap;
     private static readonly Dictionary<string, int> _functionalUseMap;
     private static readonly Dictionary<string, int> _waterSourceMap;
+    private static readonly Dictionary<string, int> _lowIncomeCommunity;
 
     static DataQuery()
     {
@@ -22,6 +23,9 @@ public static class DataQuery
 
         _waterSourceMap = context.WaterSources
             .ToDictionary(x => x.Source?.ToLowerInvariant() ?? string.Empty, x => x.Id, StringComparer.OrdinalIgnoreCase);
+
+        _lowIncomeCommunity = context.Lics
+            .ToDictionary(x => x.CommunityName?.ToLowerInvariant() ?? string.Empty, x => x.Id, StringComparer.OrdinalIgnoreCase);
 
         Console.WriteLine("DataQuery Initialized");
     }
@@ -41,4 +45,8 @@ public static class DataQuery
     public static int? GetWaterSourceId(string? source) =>
         string.IsNullOrEmpty(source) ? null :
             _waterSourceMap.TryGetValue(source, out var id) ? id : null;
+
+    public static int? GetLowIncomeCommunityId(string? name) =>
+        string.IsNullOrEmpty(name) ? null :
+            _lowIncomeCommunity.TryGetValue(name, out var id) ? id : null;
 }

@@ -14,13 +14,13 @@ public static class EntityMapper
         CarryingWidth = row.CarriageInMeters.HasValue ? (decimal?)row.CarriageInMeters.Value : null,
         SurfaceType = row.Surface,
         Length = row.LengthInMeters.HasValue ? (decimal?)row.LengthInMeters.Value : null,
-        Geometry = row.Geometry,
+        Geometry = row.Geometry?.Force2D(),
     };
 
     public static Drain MapDrain(SourceDrain row) => new()
     {
         Code = row.DrainId ?? string.Empty,
-        // RoadCode = row.RoadId,
+        RoadCode = row.RoadUid,
         CoverType = row.DrainageCover,
         SurfaceType = row.DrainageStructure,
         Size = row.DrainWidthM.HasValue ? (decimal?)row.DrainWidthM.Value : null,
@@ -30,14 +30,14 @@ public static class EntityMapper
 
     public static Ward MapWard(SourceWard row) => new()
     {
-        WardNumber = int.TryParse(row.Uid.AsSpan(1), out int wn) ? wn : 0,
+        WardNumber = row.WardNo.HasValue ? (int)row.WardNo.Value : 0,
         Area = row.AreaKm2,
         Geometry = row.Geometry,
     };
 
     public static WardBoundary MapWardBoundary(SourceWard row) => new()
     {
-        WardNumber = int.TryParse(row.Uid.AsSpan(1), out int wn) ? wn : 0,
+        WardNumber = row.WardNo.HasValue ? (int)row.WardNo.Value : 0,
         Area = row.AreaKm2,
         Geometry = row.Geometry,
     };
@@ -124,13 +124,13 @@ public static class EntityMapper
     public static Owner MapOwner(SourceBuilding2 row) => new()
     {
         Bin = row.Bin,
-        OwnerName = row.OwnerName,
-        OwnerGender = row.Gender,
+        OwnerName = row.OwnerName ?? "N/A",
+        OwnerGender = row.Gender ?? "Others",
         OwnerContact = row.ContactNo.HasValue
             ? (row.ContactNo.Value.ToString().Length == 10
                 ? long.Parse("0" + row.ContactNo.Value)
                 : (long?)row.ContactNo.Value)
-            : null,
+            : 999,
     };
 
     public static Containment MapContainment(SourceContainment2 row)
@@ -165,11 +165,11 @@ public static class EntityMapper
     {
         Bin = row.Bin ?? string.Empty,
         BuildingAssociatedTo = row.SubBin,
-        // Ward = row.Ward.HasValue ? (int?)row.Ward.Value : null,
+        Ward = row.Ward.HasValue ? (int?)row.Ward.Value : null,
         RoadCode = row.RoadUid,
-        // HouseNumber = row.Holding,
+        HouseNumber = $"{row.Bin}-{row.Holding}",
         HouseLocality = row.Address,
-        TaxCode = row.TaxMatch,
+        TaxCode = row.TaxMatch ?? "999",
         StructureTypeId = DataQuery.GetStructureTypeId(row.StructType),
         FloorCount = row.Floor.HasValue ? (int?)row.Floor.Value : null,
         ConstructionYear = row.ConstructionTime.ConvertYearToDateTime(),
@@ -184,7 +184,7 @@ public static class EntityMapper
         DiffAbledFemalePop = row.DisabledFemale.HasValue ? (int?)row.DisabledFemale.Value : null,
         DiffAbledOthersPop = row.DisabledOthers.HasValue ? (int?)row.DisabledOthers.Value : null,
         LowIncomeHh = row.Lic?.Equals("Yes", StringComparison.OrdinalIgnoreCase) == true,
-        // LicId = row.LowIncomeName, // TODO: LicId is int, LowIncomeName is string
+        LicId = DataQuery.GetLowIncomeCommunityId(row.LicName),
         WaterSourceId = DataQuery.GetWaterSourceId(row.WaterSource),
         WaterCustomerId = row.WaterId,
         WellPresenceStatus = row.Well?.Equals("Yes", StringComparison.OrdinalIgnoreCase) == true,
@@ -193,7 +193,7 @@ public static class EntityMapper
         ToiletCount = row.ToiletNum.HasValue ? (int?)row.ToiletNum.Value : null,
         HouseholdWithPrivateToilet = row.ToiletHousehold.HasValue ? (int?)row.ToiletHousehold.Value : null,
         PopulationWithPrivateToilet = row.ToiletPopulation.HasValue ? (int?)row.ToiletPopulation.Value : null,
-        // SanitationSystemId = row.ConType,
+        SanitationSystemId = 10, // row.ConType,
         DrainCode = row.DrainId,
         DesludgingVehicleAccessible = row.Desludger?.Equals("Yes", StringComparison.OrdinalIgnoreCase) == true,
         Geometry = row.Geometry.Force2D(),

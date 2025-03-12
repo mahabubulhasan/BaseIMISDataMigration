@@ -49,6 +49,35 @@ public static class Extensions
     }
 
     /// <summary>
+    /// Converts a 3D geometry (with Z coordinates) to a 2D geometry by removing the Z dimension
+    /// </summary>
+    public static MultiLineString? Force2D(this MultiLineString? geometry)
+    {
+        if (geometry == null)
+            return null;
+
+        var factory = new GeometryFactory(geometry.PrecisionModel, geometry.SRID);
+
+        var lineStrings = new LineString[geometry.NumGeometries];
+
+        for (int i = 0; i < geometry.NumGeometries; i++)
+        {
+            var lineString = (LineString)geometry.GetGeometryN(i);
+            var coordinates = lineString.Coordinates;
+            var coords2D = new Coordinate[coordinates.Length];
+
+            for (int j = 0; j < coordinates.Length; j++)
+            {
+                coords2D[j] = new Coordinate(coordinates[j].X, coordinates[j].Y);
+            }
+
+            lineStrings[i] = factory.CreateLineString(coords2D);
+        }
+
+        return factory.CreateMultiLineString(lineStrings);
+    }
+
+    /// <summary>
     /// Converts the ward string (Ward-02) to an integer (2).
     /// </summary>
     /// <param name="ward"></param>

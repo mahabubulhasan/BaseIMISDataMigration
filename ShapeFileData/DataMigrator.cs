@@ -96,10 +96,10 @@ public static class DataMigrator
             totalProcessed += batch.Count;
             skip += batchSize;
 
-            Console.WriteLine($"Processed {totalProcessed} {typeof(TTarget)} records so far...");
+            Console.WriteLine($"Processed {totalProcessed} {typeof(TTarget).Name} records so far...");
         }
 
-        Console.WriteLine($"All {totalProcessed} {typeof(TTarget)} added successfully.");
+        Console.WriteLine($"All {totalProcessed} {typeof(TTarget).Name} added successfully.");
     }
 
     private static void SaveTypes(){

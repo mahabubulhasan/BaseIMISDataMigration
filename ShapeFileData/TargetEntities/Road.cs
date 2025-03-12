@@ -31,7 +31,6 @@ public class Road
     public decimal? Length { get; set; }
 
     [Column("geom", TypeName = "geometry(multilinestring,4326)")]
-    [NotMapped]
     public MultiLineString? Geometry { get; set; }
 
     [Column("user_id")]

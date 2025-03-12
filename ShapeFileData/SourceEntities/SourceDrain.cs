@@ -42,5 +42,6 @@ public class SourceDrain
     [Column("DrWidthM")]
     public double? DrainWidthM { get; set; }
 
-
+    [Column("RoadUID")]
+    public string? RoadUid { get; set; }
 }
