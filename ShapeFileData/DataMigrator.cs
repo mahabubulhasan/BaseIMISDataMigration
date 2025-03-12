@@ -6,7 +6,7 @@ namespace ShapeFileData;
 
 public static class DataMigrator
 {
-    private static void AddContainmentTypes(DbSet<SourceBuilding2> source, DbSet<ContainmentType> target)
+    private static void AddContainmentTypes(DbSet<SourceBuilding> source, DbSet<ContainmentType> target)
     {
         var rows = source.Select(x => x.ConType).Distinct().ToList();
         AddRows(target, rows, (i, row) => new ContainmentType
@@ -17,7 +17,7 @@ public static class DataMigrator
         Console.WriteLine("Containment Types added in list.");
     }
 
-    private static void AddStructureType(DbSet<SourceBuilding2> source, DbSet<StructureType> target)
+    private static void AddStructureType(DbSet<SourceBuilding> source, DbSet<StructureType> target)
     {
         var rows = source.Select(x => x.StructType).Distinct().ToList();
         AddRows(target, rows, (i, row) => new StructureType
@@ -28,7 +28,7 @@ public static class DataMigrator
         Console.WriteLine("Structure Types added in list.");
     }
 
-    private static void AddFunctionalUse(DbSet<SourceBuilding2> source, DbSet<FunctionalUse> target)
+    private static void AddFunctionalUse(DbSet<SourceBuilding> source, DbSet<FunctionalUse> target)
     {
         var rows = source.Select(x => x.FuncUse).Distinct().ToList();
         AddRows(target, rows, (i, row) => new FunctionalUse
@@ -39,7 +39,7 @@ public static class DataMigrator
         Console.WriteLine("Functional Uses added in list.");
     }
 
-    private static void AddWaterSource(DbSet<SourceBuilding2> source, DbSet<WaterSource> target)
+    private static void AddWaterSource(DbSet<SourceBuilding> source, DbSet<WaterSource> target)
     {
         var rows = source.Select(x => x.WaterSource).Distinct().ToList();
         AddRows(target, rows, (i, row) => new WaterSource
@@ -125,9 +125,9 @@ public static class DataMigrator
         AddRows<SourceDrain, Drain>(EntityMapper.MapDrain, (source, skip, batchSize) => [.. source.Skip(skip).Take(batchSize)]);
         AddRows<SourceWard, Ward>(EntityMapper.MapWard, (source, skip, batchSize) => [.. source.Skip(skip).Take(batchSize)]);
         AddRows<SourceWard, WardBoundary>(EntityMapper.MapWardBoundary, (source, skip, batchSize) => [.. source.Skip(skip).Take(batchSize)]);
-        AddRows<SourceBuilding2, Building>(EntityMapper.MapBuilding, (source, skip, batchSize) => [.. source.Skip(skip).Take(batchSize)]);
-        AddRows<SourceBuilding2, Owner>(EntityMapper.MapOwner, (source, skip, batchSize) => [.. source.Skip(skip).Take(batchSize)]);
-        AddRows<SourceContainment2, Containment>(EntityMapper.MapContainment, (source, skip, batchSize) => [.. source.Include(x => x.SourceBuilding).Skip(skip).Take(batchSize)]);
+        AddRows<SourceBuilding, Building>(EntityMapper.MapBuilding, (source, skip, batchSize) => [.. source.Skip(skip).Take(batchSize)]);
+        AddRows<SourceBuilding, Owner>(EntityMapper.MapOwner, (source, skip, batchSize) => [.. source.Skip(skip).Take(batchSize)]);
+        AddRows<SourceContainment, Containment>(EntityMapper.MapContainment, (source, skip, batchSize) => [.. source.Include(x => x.SourceBuilding).Skip(skip).Take(batchSize)]);
         AddRows<SourceLic, Lic>(EntityMapper.MapLic, (source, skip, batchSize) => [.. source.Skip(skip).Take(batchSize)]);
         AddRows<SourceTreatmentPlant, TreatmentPlant>(EntityMapper.MapTreatmentPlant, (source, skip, batchSize) => [.. source.Skip(skip).Take(batchSize)]);
         AddRows<SourceCommunityToilet, Toilet>(EntityMapper.MapToilet, (source, skip, batchSize) => [.. source.Skip(skip).Take(batchSize)]);

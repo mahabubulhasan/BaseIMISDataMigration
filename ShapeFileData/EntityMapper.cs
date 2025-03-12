@@ -121,7 +121,7 @@ public static class EntityMapper
         OperatorOrMaintainerName = row.OperIns
     };
 
-    public static Owner MapOwner(SourceBuilding2 row) => new()
+    public static Owner MapOwner(SourceBuilding row) => new()
     {
         Bin = row.Bin,
         OwnerName = row.OwnerName ?? "N/A",
@@ -133,7 +133,7 @@ public static class EntityMapper
             : 999,
     };
 
-    public static Containment MapContainment(SourceContainment2 row)
+    public static Containment MapContainment(SourceContainment row)
     {
         Containment containment = new(){
             Id = $"C{row.Id:D6}",
@@ -161,7 +161,7 @@ public static class EntityMapper
         return containment;
     }
 
-    public static Building MapBuilding(SourceBuilding2 row) => new()
+    public static Building MapBuilding(SourceBuilding row) => new()
     {
         Bin = row.Bin ?? string.Empty,
         BuildingAssociatedTo = row.SubBin,
