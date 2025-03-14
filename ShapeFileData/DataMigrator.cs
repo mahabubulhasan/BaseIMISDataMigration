@@ -41,6 +41,7 @@ public static class DataMigrator
     {
         var rows = source.Select(x => x.FuncUse).Distinct().ToList();
         var maxId = target.Any() ? target.Max(x => x.Id) : 0;
+        rows.Add("N/A");
 
         AddRows(target, maxId, rows, (i, row) => new FunctionalUse
         {
@@ -51,6 +52,26 @@ public static class DataMigrator
             return exists != null;
         });
         Console.WriteLine("Functional Uses added in list.");
+    }
+
+    // Must be called after FunctionalUse
+    private static void AddUseCategory(TargetDbContext targetContext)
+    {
+        var maxId = targetContext.UseCategories.Any() ? targetContext.UseCategories.Max(x => x.Id) : 0;
+        targetContext.FunctionalUses.ToList().ForEach(x => {
+            var useCategory = new UseCategory
+            {
+                Id = maxId + 1,
+                Name = "N/A",
+                FunctionalUseId = x.Id
+            };
+
+            targetContext.UseCategories.Add(useCategory);
+            maxId++;
+        });
+
+        targetContext.SaveChanges();
+        Console.WriteLine("Use Categories added in list.");
     }
 
     private static void AddWaterSource(DbSet<SourceBuilding> source, DbSet<WaterSource> target)
@@ -169,6 +190,7 @@ public static class DataMigrator
         AddFunctionalUse(sourceContext.SourceBuildings, targetContext.FunctionalUses);
         AddStructureType(sourceContext.SourceBuildings, targetContext.StructureTypes);
         AddContainmentTypes(sourceContext.SourceBuildings, targetContext.ContainmentTypes);
+        AddUseCategory(targetContext);
 
         targetContext.SaveChanges();
         Console.WriteLine("Types saved successfully.");

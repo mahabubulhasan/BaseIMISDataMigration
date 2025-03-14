@@ -1,3 +1,5 @@
+using ShapeFileData.TargetEntities;
+
 namespace ShapeFileData;
 
 public static class DataQuery
@@ -5,6 +7,7 @@ public static class DataQuery
     private static Dictionary<string, int>? _containmentTypeMap;
     private static Dictionary<string, int>? _structureTypeMap;
     private static Dictionary<string, int>? _functionalUseMap;
+    private static List<UseCategory>? _useCategoryList;
     private static Dictionary<string, int>? _waterSourceMap;
     private static Dictionary<string, int>? _lowIncomeCommunity;
     private static Dictionary<string, int>? _sanitationSystem;
@@ -56,6 +59,11 @@ public static class DataQuery
                 .ToDictionary(x => x.Name?.ToLowerInvariant() ?? string.Empty, x => x.Id, StringComparer.OrdinalIgnoreCase);
             Console.WriteLine($"{name} Initialized");
         }
+        if (name == "UseCategory" && _useCategoryList == null)
+        {
+            _useCategoryList = [.. context.UseCategories];
+            Console.WriteLine($"{name} Initialized");
+        }
     }
 
     public static int? GetContainmentTypeId(string? type)
@@ -105,5 +113,17 @@ public static class DataQuery
         initialize("Toilet");
         return string.IsNullOrEmpty(name) || _toiletMap == null ? null :
             _toiletMap.TryGetValue(name, out var id) ? id : null;
+    }
+
+    public static int? GetUseCategoryId(string? name, int? functionalUseId)
+    {
+        initialize("UseCategory");
+
+        if (string.IsNullOrEmpty(name) || _useCategoryList == null || functionalUseId == null)
+            return null;
+
+        return _useCategoryList.FirstOrDefault(x =>
+            string.Equals(x.Name, name, StringComparison.OrdinalIgnoreCase) &&
+            x.FunctionalUseId == functionalUseId)?.Id;
     }
 }

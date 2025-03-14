@@ -12,6 +12,7 @@ namespace ShapeFileData
         public DbSet<ContainmentType> ContainmentTypes { get; set; }
         public DbSet<StructureType> StructureTypes { get; set; }
         public DbSet<FunctionalUse> FunctionalUses { get; set; }
+        public DbSet<UseCategory> UseCategories { get; set; }
         public DbSet<WaterSource> WaterSources { get; set; }
         public DbSet<Owner> Owners { get; set; }
         public DbSet<Drain> Drains { get; set; }

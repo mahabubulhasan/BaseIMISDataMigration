@@ -160,44 +160,49 @@ public static class EntityMapper
         return containment;
     }
 
-    public static Building MapBuilding(SourceBuilding row) => new()
+    public static Building MapBuilding(SourceBuilding row)
     {
-        Bin = row.Bin ?? string.Empty,
-        BuildingAssociatedTo = row.SubBin,
-        Ward = row.Ward.HasValue ? (int?)row.Ward.Value : null,
-        RoadCode = row.RoadUid,
-        HouseNumber = $"{row.Bin}-{row.Holding}",
-        HouseLocality = row.Address,
-        TaxCode = row.TaxMatch ?? "999",
-        StructureTypeId = DataQuery.GetStructureTypeId(row.StructType),
-        FloorCount = row.Floor.HasValue ? (int?)row.Floor.Value : null,
-        ConstructionYear = row.ConstructionTime.ConvertYearToDateTime(),
-        FunctionalUseId = DataQuery.GetFunctionalUseId(row.FuncUse2),
-        // UseCategoryId = 68, // default for N/A, seeded by imis
-        OfficeBusinessName = row.OfficeName,
-        HouseholdServed = row.Household.HasValue ? (int?)row.Household.Value : null,
-        PopulationServed = row.TotalPeople.HasValue ? (int?)row.TotalPeople.Value : null,
-        MalePopulation = row.Male.HasValue ? (int?)row.Male.Value : null,
-        FemalePopulation = row.Female.HasValue ? (int?)row.Female.Value : null,
-        OtherPopulation = row.Others.HasValue ? (int?)row.Others.Value : null,
-        DiffAbledMalePop = row.DisabledMale.HasValue ? (int?)row.DisabledMale.Value : null,
-        DiffAbledFemalePop = row.DisabledFemale.HasValue ? (int?)row.DisabledFemale.Value : null,
-        DiffAbledOthersPop = row.DisabledOthers.HasValue ? (int?)row.DisabledOthers.Value : null,
-        LowIncomeHh = row.Lic?.Equals("Yes", StringComparison.OrdinalIgnoreCase) == true,
-        LicId = DataQuery.GetLowIncomeCommunityId(row.LicName),
-        WaterSourceId = DataQuery.GetWaterSourceId("Others"), // row.WaterSource, Always "Others"
-        WaterCustomerId = row.WaterId,
-        WellPresenceStatus = row.Well?.Equals("Yes", StringComparison.OrdinalIgnoreCase) == true,
-        DistanceFromWell = row.WellDis.HasValue ? (decimal?)row.WellDis.Value : null,
-        ToiletStatus = row.ToiletStatus?.Equals("Yes", StringComparison.OrdinalIgnoreCase) == true,
-        ToiletCount = row.ToiletNum.HasValue ? (int?)row.ToiletNum.Value : null,
-        HouseholdWithPrivateToilet = row.ToiletHousehold.HasValue ? (int?)row.ToiletHousehold.Value : null,
-        PopulationWithPrivateToilet = row.ToiletPopulation.HasValue ? (int?)row.ToiletPopulation.Value : null,
-        SanitationSystemId = DataQuery.GetSanitationSystemId(row.ConType),
-        DrainCode = row.DrainId,
-        DesludgingVehicleAccessible = row.Desludger?.Equals("Yes", StringComparison.OrdinalIgnoreCase) == true,
-        Geometry = row.Geometry.Force2D(),
-    };
+        var functionalUseId = DataQuery.GetFunctionalUseId(row.FuncUse2);
+        var useCategoryId = DataQuery.GetUseCategoryId("N/A", functionalUseId);
+        return new()
+        {
+            Bin = row.Bin ?? string.Empty,
+            BuildingAssociatedTo = row.SubBin,
+            Ward = row.Ward.HasValue ? (int?)row.Ward.Value : null,
+            RoadCode = row.RoadUid,
+            HouseNumber = $"{row.Bin}-{row.Holding}",
+            HouseLocality = row.Address,
+            TaxCode = row.TaxMatch ?? "999",
+            StructureTypeId = DataQuery.GetStructureTypeId(row.StructType),
+            FloorCount = row.Floor.HasValue ? (int?)row.Floor.Value : null,
+            ConstructionYear = row.ConstructionTime.ConvertYearToDateTime(),
+            FunctionalUseId = functionalUseId,
+            UseCategoryId = useCategoryId, // row.ConType,
+            OfficeBusinessName = row.OfficeName,
+            HouseholdServed = row.Household.HasValue ? (int?)row.Household.Value : null,
+            PopulationServed = row.TotalPeople.HasValue ? (int?)row.TotalPeople.Value : null,
+            MalePopulation = row.Male.HasValue ? (int?)row.Male.Value : null,
+            FemalePopulation = row.Female.HasValue ? (int?)row.Female.Value : null,
+            OtherPopulation = row.Others.HasValue ? (int?)row.Others.Value : null,
+            DiffAbledMalePop = row.DisabledMale.HasValue ? (int?)row.DisabledMale.Value : null,
+            DiffAbledFemalePop = row.DisabledFemale.HasValue ? (int?)row.DisabledFemale.Value : null,
+            DiffAbledOthersPop = row.DisabledOthers.HasValue ? (int?)row.DisabledOthers.Value : null,
+            LowIncomeHh = row.Lic?.Equals("Yes", StringComparison.OrdinalIgnoreCase) == true,
+            LicId = DataQuery.GetLowIncomeCommunityId(row.LicName),
+            WaterSourceId = DataQuery.GetWaterSourceId("Others"), // row.WaterSource, Always "Others"
+            WaterCustomerId = row.WaterId,
+            WellPresenceStatus = row.Well?.Equals("Yes", StringComparison.OrdinalIgnoreCase) == true,
+            DistanceFromWell = row.WellDis.HasValue ? (decimal?)row.WellDis.Value : null,
+            ToiletStatus = row.ToiletStatus?.Equals("Yes", StringComparison.OrdinalIgnoreCase) == true,
+            ToiletCount = row.ToiletNum.HasValue ? (int?)row.ToiletNum.Value : null,
+            HouseholdWithPrivateToilet = row.ToiletHousehold.HasValue ? (int?)row.ToiletHousehold.Value : null,
+            PopulationWithPrivateToilet = row.ToiletPopulation.HasValue ? (int?)row.ToiletPopulation.Value : null,
+            SanitationSystemId = DataQuery.GetSanitationSystemId(row.ConType),
+            DrainCode = row.DrainId,
+            DesludgingVehicleAccessible = row.Desludger?.Equals("Yes", StringComparison.OrdinalIgnoreCase) == true,
+            Geometry = row.Geometry.Force2D(),
+        };
+    }
 
     public static BuildToilet MapBuildToilet(SourceBuilding row) => new()
     {
