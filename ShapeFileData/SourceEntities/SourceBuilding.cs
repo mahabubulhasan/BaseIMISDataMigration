@@ -194,6 +194,9 @@ public class SourceBuilding
     [Column("use_cat")]
     public string? UseCategory { get; set; }
 
+    [Column("Func_Use2")]
+    public string? FuncUse2 { get; set; }
+
     [InverseProperty("SourceBuilding")]
     public virtual ICollection<SourceContainment>? Containment { get; set; }
 }

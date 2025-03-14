@@ -9,10 +9,14 @@ public static class DataMigrator
     private static void AddContainmentTypes(DbSet<SourceBuilding> source, DbSet<ContainmentType> target)
     {
         var rows = source.Select(x => x.ConType).Distinct().ToList();
-        AddRows(target, rows, (i, row) => new ContainmentType
+        var maxId = target.Any() ? target.Max(x => x.Id) : 0;
+        AddRows(target, maxId, rows, (i, row) => new ContainmentType
         {
             Id = i,
             Type = row,
+        }, (row) => {
+            var exists = target.FirstOrDefault(x => x.Type == row);
+            return exists != null;
         });
         Console.WriteLine("Containment Types added in list.");
     }
@@ -20,10 +24,14 @@ public static class DataMigrator
     private static void AddStructureType(DbSet<SourceBuilding> source, DbSet<StructureType> target)
     {
         var rows = source.Select(x => x.StructType).Distinct().ToList();
-        AddRows(target, rows, (i, row) => new StructureType
+        var maxId = target.Any() ? target.Max(x => x.Id) : 0;
+        AddRows(target, maxId, rows, (i, row) => new StructureType
         {
             Id = i,
             Type = row,
+        }, (row) => {
+            var exists = target.FirstOrDefault(x => x.Type == row);
+            return exists != null;
         });
         Console.WriteLine("Structure Types added in list.");
     }
@@ -31,10 +39,15 @@ public static class DataMigrator
     private static void AddFunctionalUse(DbSet<SourceBuilding> source, DbSet<FunctionalUse> target)
     {
         var rows = source.Select(x => x.FuncUse).Distinct().ToList();
-        AddRows(target, rows, (i, row) => new FunctionalUse
+        var maxId = target.Any() ? target.Max(x => x.Id) : 0;
+
+        AddRows(target, maxId, rows, (i, row) => new FunctionalUse
         {
             Id = i,
             Name = row,
+        }, (row) => {
+            var exists = target.FirstOrDefault(x => x.Name == row);
+            return exists != null;
         });
         Console.WriteLine("Functional Uses added in list.");
     }
@@ -42,20 +55,25 @@ public static class DataMigrator
     private static void AddWaterSource(DbSet<SourceBuilding> source, DbSet<WaterSource> target)
     {
         var rows = source.Select(x => x.WaterSource).Distinct().ToList();
-        AddRows(target, rows, (i, row) => new WaterSource
+        var maxId = target.Any() ? target.Max(x => x.Id) : 0;
+
+        AddRows(target, maxId, rows, (i, row) => new WaterSource
         {
             Id = i,
             Source = row,
+        }, (row) => {
+            var exists = target.FirstOrDefault(x => x.Source == row);
+            return exists != null;
         });
         Console.WriteLine("Water Sources added in list.");
     }
 
-    private static void AddRows<T>(DbSet<T> dbset, List<string?> rows, Func<int, string, T> makeRow) where T : class
+    private static void AddRows<T>(DbSet<T> dbset, int maxId, List<string?> rows, Func<int, string, T> makeRow, Func<string, bool> exists) where T : class
     {
-        int i = 1;
+        int i = maxId + 1;
         foreach (var row in rows)
         {
-            if (string.IsNullOrEmpty(row))
+            if (string.IsNullOrEmpty(row) || exists(row))
             {
                 continue;
             }
@@ -102,7 +120,6 @@ public static class DataMigrator
         Console.WriteLine($"All {totalProcessed} {typeof(TTarget).Name} added successfully.");
     }
 
-    // Seeded directly from base_imis
     private static void SaveTypes(){
         using var sourceContext = new SourceDbContext();
         using var targetContext = new TargetDbContext();
@@ -118,7 +135,7 @@ public static class DataMigrator
 
     public static void Migrate()
     {
-        // SaveTypes();
+        SaveTypes();
 
         // Calling Order is important
         AddRows<SourceRoad, Road>(EntityMapper.MapRoad, (source, skip, batchSize) => [.. source.Skip(skip).Take(batchSize)]);

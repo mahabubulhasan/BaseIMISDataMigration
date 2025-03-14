@@ -21,6 +21,7 @@ namespace ShapeFileData
         public DbSet<TreatmentPlant> TreatmentPlants { get; set; }
         public DbSet<Ward> Wards { get; set; }
         public DbSet<WardBoundary> WardBoundaries { get; set; }
+        public DbSet<SanitationSystem> SanitationSystems { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

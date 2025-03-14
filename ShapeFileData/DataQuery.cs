@@ -7,6 +7,7 @@ public static class DataQuery
     private static readonly Dictionary<string, int> _functionalUseMap;
     private static readonly Dictionary<string, int> _waterSourceMap;
     private static readonly Dictionary<string, int> _lowIncomeCommunity;
+    private static readonly Dictionary<string, int> _sanitationSystem;
 
     static DataQuery()
     {
@@ -26,6 +27,9 @@ public static class DataQuery
 
         _lowIncomeCommunity = context.Lics
             .ToDictionary(x => x.CommunityName?.ToLowerInvariant() ?? string.Empty, x => x.Id, StringComparer.OrdinalIgnoreCase);
+
+        _sanitationSystem = context.SanitationSystems
+            .ToDictionary(x => x.SanitationSystemName?.ToLowerInvariant() ?? string.Empty, x => x.Id, StringComparer.OrdinalIgnoreCase);
 
         Console.WriteLine("DataQuery Initialized");
     }
@@ -49,4 +53,8 @@ public static class DataQuery
     public static int? GetLowIncomeCommunityId(string? name) =>
         string.IsNullOrEmpty(name) ? null :
             _lowIncomeCommunity.TryGetValue(name, out var id) ? id : null;
+
+    public static int? GetSanitationSystemId(string? name) =>
+        string.IsNullOrEmpty(name) ? null :
+            _sanitationSystem.TryGetValue(name, out var id) ? id : null;
 }
