@@ -22,6 +22,7 @@ namespace ShapeFileData
         public DbSet<Ward> Wards { get; set; }
         public DbSet<WardBoundary> WardBoundaries { get; set; }
         public DbSet<SanitationSystem> SanitationSystems { get; set; }
+        public DbSet<BuildToilet> BuildToilets { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -32,6 +33,17 @@ namespace ShapeFileData
 
             var connectionString = configuration.GetConnectionString("TargetConnection");
             optionsBuilder.UseNpgsql(connectionString, options => options.UseNetTopologySuite());
+        }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<BuildToilet>()
+                .HasOne(b => b.Building)
+                .WithOne(b => b.BuildToilet)
+                .HasForeignKey<BuildToilet>(b => b.Bin)
+                .HasPrincipalKey<Building>(b => b.Bin);
         }
     }
 }

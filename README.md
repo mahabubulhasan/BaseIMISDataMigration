@@ -37,6 +37,7 @@ truncate table fsm.containments cascade;
 truncate table layer_info.low_income_communities cascade;
 truncate table fsm.treatment_plants cascade;
 truncate table fsm.toilets cascade;
+truncate table fsm.build_toilets cascade;
 ```
 
 ## Check for duplicates

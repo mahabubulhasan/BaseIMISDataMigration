@@ -1,3 +1,4 @@
+using System.Data;
 using Microsoft.EntityFrameworkCore;
 using ShapeFileData.SourceEntities;
 using ShapeFileData.TargetEntities;
@@ -120,6 +121,46 @@ public static class DataMigrator
         Console.WriteLine($"All {totalProcessed} {typeof(TTarget).Name} added successfully.");
     }
 
+    private static void AddBuildToilets()
+    {
+        using var sourceContext = new SourceDbContext();
+        using var targetContext = new TargetDbContext();
+
+        var communityToiletBuildings = sourceContext.SourceBuildings
+            .Where(x => x.ConType == "Community Toilet")
+            .ToList();
+
+        if (communityToiletBuildings.Count == 0)
+        {
+            Console.WriteLine("No community toilet buildings found.");
+            return;
+        }
+
+        var bins = communityToiletBuildings.Select(x => x.Bin).ToList();
+
+        var targetBuildingDict = targetContext.Buildings
+            .Where(b => bins.Contains(b.Bin))
+            .ToDictionary(b => b.Bin);
+
+        int updatedCount = 0;
+        var buildToilets = new List<BuildToilet>();
+
+        foreach (var building in communityToiletBuildings)
+        {
+            if (building.Bin is not null && targetBuildingDict.TryGetValue(building.Bin, out var targetBuilding))
+            {
+                var buildToilet = EntityMapper.MapBuildToilet(building);
+                buildToilets.Add(buildToilet);
+                updatedCount++;
+            }
+        }
+
+        targetContext.BuildToilets.AddRange(buildToilets);
+
+        targetContext.SaveChanges();
+        Console.WriteLine($"BuildToilet updated successfully: {updatedCount} records processed.");
+    }
+
     private static void SaveTypes(){
         using var sourceContext = new SourceDbContext();
         using var targetContext = new TargetDbContext();
@@ -149,5 +190,7 @@ public static class DataMigrator
         AddRows<SourceTreatmentPlant, TreatmentPlant>(EntityMapper.MapTreatmentPlant, (source, skip, batchSize) => [.. source.Skip(skip).Take(batchSize)]);
         AddRows<SourceCommunityToilet, Toilet>(EntityMapper.MapToilet, (source, skip, batchSize) => [.. source.Skip(skip).Take(batchSize)]);
         AddRows<SourcePublicToilet, Toilet>(EntityMapper.MapToilet, (source, skip, batchSize) => [.. source.Skip(skip).Take(batchSize)]);
+
+        AddBuildToilets();
     }
 }

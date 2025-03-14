@@ -91,7 +91,6 @@ public static class EntityMapper
         Status = row.Status?.Equals("Operational", StringComparison.OrdinalIgnoreCase) == true,
         OwningInstitutionName = row.OwnIns,
         OperatorOrMaintainerName = row.OperIns
-
     };
 
     public static Toilet MapToilet(SourcePublicToilet row) => new()
@@ -174,7 +173,7 @@ public static class EntityMapper
         FloorCount = row.Floor.HasValue ? (int?)row.Floor.Value : null,
         ConstructionYear = row.ConstructionTime.ConvertYearToDateTime(),
         FunctionalUseId = DataQuery.GetFunctionalUseId(row.FuncUse2),
-        UseCategoryId = 68, // default for N/A, seeded by imis
+        // UseCategoryId = 68, // default for N/A, seeded by imis
         OfficeBusinessName = row.OfficeName,
         HouseholdServed = row.Household.HasValue ? (int?)row.Household.Value : null,
         PopulationServed = row.TotalPeople.HasValue ? (int?)row.TotalPeople.Value : null,
@@ -186,7 +185,7 @@ public static class EntityMapper
         DiffAbledOthersPop = row.DisabledOthers.HasValue ? (int?)row.DisabledOthers.Value : null,
         LowIncomeHh = row.Lic?.Equals("Yes", StringComparison.OrdinalIgnoreCase) == true,
         LicId = DataQuery.GetLowIncomeCommunityId(row.LicName),
-        WaterSourceId = DataQuery.GetWaterSourceId(row.WaterSource),
+        WaterSourceId = DataQuery.GetWaterSourceId("Others"), // row.WaterSource, Always "Others"
         WaterCustomerId = row.WaterId,
         WellPresenceStatus = row.Well?.Equals("Yes", StringComparison.OrdinalIgnoreCase) == true,
         DistanceFromWell = row.WellDis.HasValue ? (decimal?)row.WellDis.Value : null,
@@ -198,5 +197,14 @@ public static class EntityMapper
         DrainCode = row.DrainId,
         DesludgingVehicleAccessible = row.Desludger?.Equals("Yes", StringComparison.OrdinalIgnoreCase) == true,
         Geometry = row.Geometry.Force2D(),
+    };
+
+    public static BuildToilet MapBuildToilet(SourceBuilding row) => new()
+    {
+        Bin = row.Bin,
+        ToiletId = DataQuery.GetToiletId(row.CommToilet),
+        CreatedAt = DateTime.UtcNow,
+        UpdatedAt = DateTime.UtcNow,
+        DeletedAt = null
     };
 }

@@ -142,4 +142,7 @@ public class Building
 
     [Column("user_id")]
     public int? UserId { get; set; }
+
+    [InverseProperty("Building")]
+    public virtual BuildToilet? BuildToilet { get; set; }
 }
